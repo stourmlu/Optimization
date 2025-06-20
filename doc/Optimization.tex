@@ -1,0 +1,152 @@
+\documentclass[12pt]{article}
+
+\usepackage[titletoc]{appendix}
+
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{bbm}
+
+\usepackage[margin=1in]{geometry}
+
+\title{Unconstrained optimization}
+\author{Ludovic Stourm}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This document describes various methods to numerically maximize a function $f(x)$:
+\begin{equation}
+	\underset{x}{\max} \hspace*{5pt} f(x)
+\end{equation}
+We use the notations:
+\begin{itemize}
+	\item $f$: objective function
+	\item $x$: argument of $f$ (vector of dimension $[J \times 1]$)
+	\item $\nabla f$: gradient of $f$ ($[J \times 1]$ vector of 1st-degree derivatives)
+	\item $H_f$: Hessian of $f$ ($[J \times J]$ matrix of 2nd-degree derivatives)
+	\item $d$: Direction of an update ($[J \times 1]$ vector)
+	\item $\alpha$: Step size of an update ($[J \times 1]$ vector)
+	\item $s = \alpha d$: Update ($[J \times 1]$ vector)
+\end{itemize}
+\vspace*{15pt}
+We consider different methods. Some of them requires one to evaluate not only $f$ but also its gradient $\nabla f$, and some even the Hessian $H_f$. This is summarized in the table below:
+\begin{center}
+\begin{tabular}{|l|c|c|c}
+	\hline
+	Method & Requires gradient & Requires Hessian  \\ \hline
+	Newton-Raphson		& $\checkmark$  & $\checkmark$   \\
+	Gradient ascent		& $\checkmark$  &  \\
+%	Backtracking line search	& $\checkmark$  &  \\
+%	Conjugate gradient		& $\checkmark$  &  \\
+	BFGS				& $\checkmark$  &  \\
+	Nelder-Mead			&   &  \\
+	\hline
+\end{tabular}
+\end{center}
+
+
+
+\section{Newton-Raphson}
+\begin{enumerate}
+	\item Set $k \leftarrow 0$
+	\item Initialize starting point $x_0$
+	\item Evaluate $f(x_k)$, $g_k \leftarrow \nabla f(x_k)$, and $H_k \leftarrow H_f(x_k)$
+	\item Set direction of update: $d_{k} \leftarrow -H^{-1}_{k} g_k $.
+	\item Set step size $\alpha_k \leftarrow 1$ or find a better value through a line search procedure.
+	\item Update point: $x_{k+1} \leftarrow x_k + \alpha_k d_k$
+	\item Set $k \leftarrow k + 1$ and go to step 3.
+\end{enumerate}
+
+
+\section{Gradient ascent}
+\begin{enumerate}
+	\item Set $k \leftarrow 0$
+	\item Initialize starting point $x_0$
+	\item Evaluate $f(x_k)$ and $g_k \leftarrow \nabla f(x_k)$
+	\item Set direction of update: $d_{k} \leftarrow g_k $.
+	\item Set step size $\alpha_k$ a priori (constant step size $\alpha$), or find a better value through a line search procedure.
+	\item Update point: $x_{k+1} \leftarrow x_k + \alpha_k d_k$
+	\item Set $k \leftarrow k + 1$ and go to step 3.
+\end{enumerate}
+
+
+%\section{Backtracking line search}
+
+
+%\section{Conjugate gradient}
+
+
+\section{BFGS (quasi-Newton method)}
+This method uses evaluations of $f$ and its gradient $\nabla f$. The Hessian $H$ (or rather, its inverse $H^{-1}$) is ``approximated" at each iteration (although there is no guarantee that it converges to the true Hessian!).
+\begin{enumerate}
+	\item Set $k \leftarrow 0$
+	\item Initialize starting point $x_0$, inverse Hessian $H_0^{-1}$
+	\item Evaluate $f(x_k)$ and $g_k \leftarrow \nabla f(x_k)$
+	\item Set the direction of update $d_{k} = -H^{-1}_{k} g_k $.
+	\item Find a ``good" step size $\alpha_k$ through a line search procedure (more on this later).
+	\item Set update $s_k \leftarrow \alpha_k d_k$
+	\item Update point $x_{k+1} = x_k + s_k$
+	\item Update Hessian $H^{-1}_{k+1} = H^{-1}_{k} + \frac{(s_k' y_k + y_k' H^{-1}_k y_k)(s_k s_k')}{(s_k' y_k)^2} - \frac{H^{-1}_k y_k s_k' + s_k y_k' H^{-1}_k}{s_k' y_k} $. \\
+	where $y_k = \nabla f(x_{k+1}) - \nabla f(x_k)$.
+	\item Set $k \leftarrow k + 1$ and go to step 3.
+\end{enumerate}
+
+\section{Nelder-Mead}
+This method only uses evaluations of $f$ and does not require an evaluation of the gradient or the Hessian (which may not even exist). This algorithm \textbf{minimizes} function $f$.
+\begin{enumerate}
+	\item Initialize $\alpha \leftarrow 1$, $\gamma \leftarrow 2$, $\rho \leftarrow 0.5$, $\sigma \leftarrow 0.5$.
+	\item Evaluate $f(x_0)$
+	\item Initial simplex: define $x_j = x_0 + \epsilon \times u_j$ and evaluate $f(x_j)$ for each dimension $j$ (where $u_j$ is the corresponding unit vector in that direction and $\epsilon$ is some small value)
+	\item Define the  $(J+1)$ initial vertices as $[x_0, x_1, ..., x_J]$
+	\item Sort the $(J+1)$ vertices $x_j$ by increasing values of $f(x_j)$
+	\item Compute centroid based on the $J$ first vertices $xo \leftarrow 1/J \times \sum_{j=0}^{J-1} x_j$
+	\item Compute $xr \leftarrow xo + \alpha (xo -x_{J})$
+	\item If $f(xr) \ge f(x_0)$ and $f(xr) < f(x_{J-1})$:
+		\begin{enumerate}
+			\item $x_{J} \leftarrow xr $ \hspace*{5pt} (reflect)
+			\item Go to 5.
+		\end{enumerate}
+
+	\item If $f(xr) < f(x_0)$:
+		\begin{enumerate}
+			\item Compute $xe \leftarrow xo + \gamma (xr - xo)$
+			\item If $f(xe) < f(xr)$:
+				\begin{enumerate}
+					\item $x_{J} \leftarrow xe $ \hspace*{5pt} (expand)
+					\item Go to 5.
+				\end{enumerate}
+				Else:
+				\begin{enumerate}
+					\item $x_{J} \leftarrow xr $ \hspace*{5pt} (reflect)
+					\item Go to 5.
+				\end{enumerate}
+		\end{enumerate}
+	
+	\item If $f(xr) < f(x_J)$:
+		\begin{enumerate}
+			\item $xc \leftarrow xo  + \rho (xr - xo) $
+			\item If $f(xc) < f(xr)$
+				\begin{enumerate}
+					\item $x_{J} \leftarrow xc $ \hspace*{5pt} (contract outside)
+					\item Go to 5.
+				\end{enumerate}
+		\end{enumerate}
+		Else:
+		$xc \leftarrow xo  + \rho (x_{J} - xo) $
+		\begin{enumerate}
+			\item $xc \leftarrow xo  + \rho (xr - xo) $
+			\item If $f(xc) < f(x_J)$
+				\begin{enumerate}
+					\item $x_{J} \leftarrow xc $ \hspace*{5pt} (contract outside)
+					\item Go to 5.
+				\end{enumerate}
+		\end{enumerate}
+	
+	\item For all $j$ in $1, ..., J$: do $x_j \leftarrow x_0 + \sigma(x_j - x_0)$ \hspace*{5pt} (shrink)
+	\item Go to 5.	
+\end{enumerate}
+
+\end{document}
+
