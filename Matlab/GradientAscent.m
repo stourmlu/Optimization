@@ -1,4 +1,4 @@
-function [xstar, fval] = GradientAscent(myfunc, x0, tolX, iterMax, stepSize)
+function [xstar, fval] = GradientAscent(myfunc, x0, tolX, iterMax, stepSize, varargin)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% This function applies the Gradient Ascent method to maximize a function.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
