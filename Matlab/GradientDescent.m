@@ -1,6 +1,6 @@
-function [xstar, fval] = GradientAscent(myfunc, x0, tolX, iterMax, stepSize, varargin)
+function [xstar, fval] = GradientDescent(myfunc, x0, tolX, iterMax, stepSize, varargin)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	% This function applies the Gradient Ascent method to maximize a function.
+	% This function applies the Gradient Descent method to minimize a function.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%% Inputs:
 	% myfunc:				function:
@@ -22,7 +22,7 @@ function [xstar, fval] = GradientAscent(myfunc, x0, tolX, iterMax, stepSize, var
 	if length(varargin) >= 1; verbose  = varargin{1}; else; verbose = false; end
 	
 	% Do initializations
-	algoName  = 'Gradient Ascent';
+	algoName  = 'Gradient Descent';
 	x         = x0;
 	iter      = 0;
 	funcEvals = 0;
@@ -34,7 +34,7 @@ function [xstar, fval] = GradientAscent(myfunc, x0, tolX, iterMax, stepSize, var
 		[obj, grad] = myfunc(x);
 		
 		%%% Determine update for next step
-		nextStep = stepSize * grad;
+		nextStep = -stepSize * grad;
 		
 		%%% Compute criterionX for convergence
 		criterionX = max(abs(nextStep));

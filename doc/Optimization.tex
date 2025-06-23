@@ -16,9 +16,9 @@
 \maketitle
 
 \section{Introduction}
-This document describes various methods to numerically maximize a function $f(x)$:
+This document describes various methods to numerically minimize a function $f(x)$:
 \begin{equation}
-	\underset{x}{\max} \hspace*{5pt} f(x)
+	\underset{x}{\min} \hspace*{5pt} f(x)
 \end{equation}
 We use the notations:
 \begin{itemize}
@@ -60,12 +60,12 @@ We consider different methods. Some of them requires one to evaluate not only $f
 \end{enumerate}
 
 
-\section{Gradient ascent}
+\section{Gradient descent}
 \begin{enumerate}
 	\item Set $k \leftarrow 0$
 	\item Initialize starting point $x_0$
 	\item Evaluate $f(x_k)$ and $g_k \leftarrow \nabla f(x_k)$
-	\item Set direction of update: $d_{k} \leftarrow g_k $.
+	\item Set direction of update: $d_{k} \leftarrow -g_k $.
 	\item Set step size $\alpha_k$ a priori (constant step size $\alpha$), or find a better value through a line search procedure.
 	\item Update point: $x_{k+1} \leftarrow x_k + \alpha_k d_k$
 	\item Set $k \leftarrow k + 1$ and go to step 3.
