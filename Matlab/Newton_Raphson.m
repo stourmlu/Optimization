@@ -1,7 +1,6 @@
 function [xstar, fval] = Newton_Raphson(myfunc, x0, tolX, iterMax, varargin)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% This function applies the Newton-Raphson method to optimize a function.
-	% At each step, the gradient and hessian of the function need to be computed.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%% Inputs:
 	% myfunc:				function:

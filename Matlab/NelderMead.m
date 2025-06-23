@@ -1,9 +1,9 @@
-function [xstar, fval] = NelderMead(f, x0)
+function [xstar, fval] = NelderMead(myfunc, x0)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-	% This function implements the Nelder-Mead method to minimize a function f, taking x0 as the starting point.
+	% This function implements the Nelder-Mead method to minimize a function myfunc, taking x0 as the starting point.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%% Inputs:
-	% f:				function (takes Nx1 as input, returns scalar)
+	% myfunc:			function (takes Nx1 as input, returns scalar)
 	% x0:				N x 1
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	%%%%% Outputs:
@@ -45,7 +45,7 @@ function [xstar, fval] = NelderMead(f, x0)
 	
 	% Compute f values corresponding to initial xs
 	for ii = 1:N+1
-		fs(ii) = f(xs(:,ii));
+		fs(ii) = myfunc(xs(:,ii));
 	end
 	iter      = 0;
 	funcEvals = N+1;
@@ -83,7 +83,7 @@ function [xstar, fval] = NelderMead(f, x0)
 			
 			%%% 3) Reflection
 			xr = xo + alpha*(xo - xs(:,N+1));
-			fr = f(xr);
+			fr = myfunc(xr);
 			funcEvals = funcEvals+1;
 			if fr >= fs(1) && fr < fs(N)
 				xs(:,N+1) = xr;
@@ -95,7 +95,7 @@ function [xstar, fval] = NelderMead(f, x0)
 			%%% 4) Expansion
 			if fr < fs(1)
 				xe = xo + gamma*(xr - xo);
-				fe = f(xe);
+				fe = myfunc(xe);
 				funcEvals = funcEvals+1;
 				if fe < fr
 					xs(:,N+1) = xe;
@@ -112,7 +112,7 @@ function [xstar, fval] = NelderMead(f, x0)
 			%%% 5) Contraction
 			if fr < fs(N+1)
 				xc = xo + rho*(xr - xo);
-				fc = f(xc);
+				fc = myfunc(xc);
 				funcEvals = funcEvals+1;
 				if fc < fr
 					xs(:,N+1) = xc;
@@ -122,7 +122,7 @@ function [xstar, fval] = NelderMead(f, x0)
 				end
 			else
 				xc = xo + rho*(xs(:,N+1) - xo);
-				fc = f(xc);
+				fc = myfunc(xc);
 				funcEvals = funcEvals+1;
 				if fc < fs(N+1)
 					xs(:,N+1) = xc;
@@ -137,7 +137,7 @@ function [xstar, fval] = NelderMead(f, x0)
 		%%% 6) Shrink
 		xs(:,2:end) = xs(:,1) + sigma*(xs(:,2:end) - xs(:,1));
 		for ii = 2:N+1
-			fs(ii) = f(xs(:,ii));
+			fs(ii) = myfunc(xs(:,ii));
 			funcEvals = funcEvals+1;
 		end
 		message = 'shrink';
