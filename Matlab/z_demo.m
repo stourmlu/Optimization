@@ -8,7 +8,7 @@ fval1
 
 
 %%% NEWTON-RAPHSON
-[xstar2, fval2] = Newton_Raphson(@banana_func, x0, 1e-10, 500); % TO DO: this is for maximization, not minimization...
+[xstar2, fval2] = Newton_Raphson(@banana_func, x0, 1e-10, 500);
 xstar2
 fval2
 
@@ -20,7 +20,7 @@ fval2
 
 
 %%% BFGS
-[xstar3, fval3] = BFGS(@banana_func, x0, 1e-10, 2000, true); % TO DO: this is for minimization...
+[xstar3, fval3] = BFGS(@banana_func, x0, 1e-10, 2000, true);
 xstar3
 fval3
 
