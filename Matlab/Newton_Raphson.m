@@ -1,4 +1,4 @@
-function [xstar, fval] = Newton_Raphson(myfunc, x0, tolX, iterMax, varargin)
+function [xstar, fval, varargout] = Newton_Raphson(myfunc, x0, tolX, iterMax, varargin)
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	% This function applies the Newton-Raphson method to optimize a function.
 	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -46,21 +46,19 @@ function [xstar, fval] = Newton_Raphson(myfunc, x0, tolX, iterMax, varargin)
 			disp(sprintf('%s iteration %d: obj=%g, criterion=%g', algoName, iter, obj, criterionX));
 		end
 		
-		% Output result when convergence is reached
-		if criterionX <= tolX
-			disp(sprintf('%s algorithm has finished afer %d iterations.', algoName, iter));
+		% Output result when convergence is reached or iterMax is reached
+		if criterionX <= tolX || iter >= iterMax
+			if criterionX <= tolX
+				disp(sprintf('%s algorithm has finished afer %d iterations.', algoName, iter));
+			else
+				disp(sprintf('%s algorithm has not converged afer %d iterations.', algoName, iter));
+			end
 			disp(sprintf('Value of objective: %g', obj));
 			disp(sprintf('Value of criterion: %g', criterionX));
 			xstar = x;
 			fval  = obj;
-			return;
-		end
-		
-		% Output result when iterMax is reached
-		if iter >= iterMax
-			disp(sprintf('%s algorithm has not converged afer %d iterations.', algoName, iter));
-			xstar = x;
-			fval = obj;
+			if nargout >= 3; varargout{1} = grad; end;
+			if nargout >= 4; varargout{2} = hess; end;
 			return;
 		end
 		
