@@ -258,7 +258,7 @@ function BFGS(x0, myfunc; tolX=1e-10, iterMax=500, stepSize=1, verbose=false)
 	if verbose
 	println("                                                        First-order")
 	println(" Iteration  Func-count       f(x)        Step-size       optimality")
-		firstOrderOptimality = max(abs.(grad_old))
+		firstOrderOptimality = maximum(abs.(grad_old))
 		println(@sprintf("%6d%12d%17g%30.3g", 0, funcCount,obj_old,firstOrderOptimality))
 	end
 
@@ -293,8 +293,6 @@ function BFGS(x0, myfunc; tolX=1e-10, iterMax=500, stepSize=1, verbose=false)
 			
 			obj_diff            = obj_new - obj_old
 			grad_new_TIMES_dir  = grad_new'*direction
-			
-			myalpha = alpha; # Store alpha for display
 
 			### Do cubic interpolation to find alpha_c
 			gprime0      = grad_old'*direction
@@ -359,8 +357,8 @@ function BFGS(x0, myfunc; tolX=1e-10, iterMax=500, stepSize=1, verbose=false)
 		
 		# Display stuff
 		if verbose
-			firstOrderOptimality = max(abs.(grad_new))
-			println(@sprintf("%6d%12d%17g%15g%15.3g", iter, funcCount,obj_new,myalpha,firstOrderOptimality))
+			firstOrderOptimality = maximum(abs.(grad_new))
+			println(@sprintf("%6d%12d%17g%15g%15.3g", iter, funcCount,obj_new,alpha,firstOrderOptimality))
 		end
 		
 	end
