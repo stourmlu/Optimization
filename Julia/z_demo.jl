@@ -19,26 +19,27 @@ function banana_func(x; grad::Bool=false, hessian::Bool=false)
     
     f = 100*(x2-x1^2)^2 + (1-x1)^2
 	
-	if grad
-		g = zeros(2)
-		g[1] = -400*x1*(x2-x1^2) - 2*(1-x1)
-		g[2] = 200*(x2-x1^2)
-	else
-		g = nothing
+	if !grad
+		return f
 	end
 	
-	if hessian
-		hess = zeros(2,2)
-		hess[1,1] = -400*(x2 - 3*x1^2) + 2
-		hess[1,2] = -400*x1
-		hess[2,1] = hess[1,2]
-		hess[2,2] = 200
-	else
-		hess = nothing
+	g = zeros(2)
+	g[1] = -400*x1*(x2-x1^2) - 2*(1-x1)
+	g[2] = 200*(x2-x1^2)
+	
+	if !hessian
+		return f,g
 	end
 	
+	hess = zeros(2,2)
+	hess[1,1] = -400*(x2 - 3*x1^2) + 2
+	hess[1,2] = -400*x1
+	hess[2,1] = hess[1,2]
+	hess[2,2] = 200
 	return (f, g, hess)
 end
+
+(f, g)=banana_func(x0, grad=true)
 
 ### NELDER-MEAD
 (xstar1, fval1) = NelderMead(x0, banana_func)

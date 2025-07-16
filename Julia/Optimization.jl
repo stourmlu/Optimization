@@ -275,7 +275,7 @@ function BFGS(x0, myfunc; tolX=1e-10, iterMax=500, stepSize=1, verbose=false)
 		direction = -B_inv * grad_old
 		
 		foundGoodCandidate = false
-		while ~foundGoodCandidate
+		while !foundGoodCandidate
 			delta_x = alpha * direction
 			
 			if maximum(abs.(delta_x)) < tolX
