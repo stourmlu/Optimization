@@ -38,7 +38,7 @@ function [xstar,fval,grad] = BFGS(myfunc, x0, tolX, iterMax, varargin)
 	[obj_old,grad_old] = myfunc(x_old);
 	funcCount = 1;
 	B_inv = eye(NumX);
-	alpha = 1./max(abs(grad_old))
+	alpha = 1./max(abs(grad_old));
 	
 	% Display stuff
 	if verbose
